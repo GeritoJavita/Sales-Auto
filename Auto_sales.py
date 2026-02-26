@@ -1,5 +1,7 @@
 
 # Libreraias que vamos a usar para este nuevo modelo
+#C:/Users/Administrador/AppData/Local/Programs/Python/Python312/python.exe -m pip install pygetwindow pillow
+
 
 import time
 import random
