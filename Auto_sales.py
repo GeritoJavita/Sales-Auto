@@ -1,34 +1,32 @@
 
 # Libreraias que vamos a usar para este nuevo modelo
 
-import time 
-import randomimport tkinder as tk
-
+import time
+import random
+import tkinter as tk
 from pynput import mouse, keyboard
 import psutil
 import pygetwindow as gw
-
 #Config
 
-Tiempo_Inactivo = 15 #Estos van por segundos
-Ultima_Actividad = time.time()
+INACTIVITY_TIME = 15  # segundos
+last_activity = time.time()
 waifu_window = None
 
 #Detector de actividad
 
-def Actividad(*args):
-    global Ultima_Actividad
-    Ultima_Actividad = time.time()
+def update_activity(*args):
+    global last_activity
+    last_activity = time.time()
 
-Mouse.Listener(
-    on_move=Actividad,
-    on_click=Actividad,
-    on_scroll=Actividad
+mouse.Listener(
+    on_move=update_activity,
+    on_click=update_activity,
+    on_scroll=update_activity
 ).start()
 
 keyboard.Listener(
-    
-    on_press=Actividad
+    on_press=update_activity
 ).start()
 
 
@@ -95,4 +93,57 @@ def waifu_comment(context):
         "¿Pensando en la vida o en comida? porque same",
         "Yo aquí existiendo y tú quieto jsjsjs"
     ])
+def show_waifu(message):
+    global waifu_window
+
+    if waifu_window is not None:
+        return
+
+    waifu_window = tk.Tk()
+    waifu_window.overrideredirect(True)
+    waifu_window.attributes("-topmost", True)
+    waifu_window.attributes("-alpha", 0.9)
+    waifu_window.configure(bg="#2b2b2b")
+
+    width = 300
+    height = 120
+
+    screen_width = waifu_window.winfo_screenwidth()
+    screen_height = waifu_window.winfo_screenheight()
+
+    x = screen_width - width - 20
+    y = screen_height - height - 60
+
+    waifu_window.geometry(f"{width}x{height}+{x}+{y}")
+
+    label = tk.Label(
+        waifu_window,
+        text=message,
+        bg="#2b2b2b",
+        fg="white",
+        font=("Segoe UI", 10),
+        wraplength=260,
+        justify="left"
+    )
+    label.pack(padx=15, pady=15)
+
+    # Destruir después de 6 segundos
+    waifu_window.after(6000, destroy_waifu)
+
+    waifu_window.mainloop()
+
+def destroy_waifu():
+    global waifu_window
+    if waifu_window:
+        waifu_window.destroy()
+        waifu_window = None
         
+print("🌸 Waifu virtual iniciada...")
+
+while True:
+    if time.time() - last_activity > INACTIVITY_TIME:
+        context = get_active_window()
+        message = waifu_comment(context)
+        show_waifu(message)
+        last_activity = time.time()
+    time.sleep(1)
