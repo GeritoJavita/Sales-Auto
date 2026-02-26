@@ -32,3 +32,15 @@ keyboard.Listener(
 ).start()
 
 
+#APP ACTIVA
+
+def get_active_window():
+    try:
+        window = gw.getActiveWindow()
+        if window:
+            return window.title.lower()
+    except:
+        return ""
+    return ""
+
+
