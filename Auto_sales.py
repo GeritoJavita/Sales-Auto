@@ -15,3 +15,20 @@ Ultima_Actividad = time.time()
 waifu_window = None
 
 #Detector de actividad
+
+def Actividad(*args):
+    global Ultima_Actividad
+    Ultima_Actividad = time.time()
+
+Mouse.Listener(
+    on_move=Actividad,
+    on_click=Actividad,
+    on_scroll=Actividad
+).start()
+
+keyboard.Listener(
+    
+    on_press=Actividad
+).start()
+
+
